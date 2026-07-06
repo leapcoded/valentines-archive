@@ -187,8 +187,8 @@ var JQUERY_FACTS = [
 var SOCIAL_LINKS = [
   { label: "Website", url: "https://lilpossum.xyz" },
   { label: "GitHub", url: "https://github.com/leapcoded" },
-  { label: "Bluesky", url: "https://bsky.app/profile/lilpossum.bsky.social" },
-  { label: "Bandcamp", url: "https://lilpossum.bandcamp.com" },
+  { label: "Bluesky", url: "https://bsky.app/profile/polyamari.gay" },
+  { label: "Bandcamp", url: "https://srvl.bandcamp.com" },
   { label: "Valentine terminal", url: "https://valentine.lilpossum.xyz" },
   { label: "Become a cat", url: "https://cat.lilpossum.xyz" }
 ];
