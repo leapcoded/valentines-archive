@@ -335,8 +335,8 @@ ASCIIbuck: function(){
   credits: function(){
       this.echo();
       this.echo("|  Site built by " + commandText('Skye Wright'));
-      this.echo("|  Using " + commandText('Jquery Terminal Emulator') + " by " + commandText('Jakub Jankiewicz') + ": http://terminal.jcubic.pl") +
-      this.echo("|  Using " + commandText('Homepage Layout') + " by " + commandText('Ronnie Pyne') + ": https://github.com/perverse") +
+      this.echo("|  Using " + commandText('Jquery Terminal Emulator') + " by " + commandText('Jakub Jankiewicz') + ": http://terminal.jcubic.pl");
+      this.echo("|  Using " + commandText('Homepage Layout') + " by " + commandText('Ronnie Pyne') + ": https://github.com/perverse");
       this.echo();
   },
 
@@ -368,7 +368,7 @@ ASCIIbuck: function(){
 
 jQuery(document).ready(function($) {
   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-      window.location.href = "https://sjwright.net";
+      window.location.href = "https://lilpossum.xyz";
   } else {
       $('body').terminal(App, {
           greetings: function(cb){
