@@ -1,0 +1,81 @@
+# Deploy via GitHub Actions (required).
+# In repo Settings → Pages → Build and deployment, set Source to "GitHub Actions".
+# Legacy "Deploy from a branch" races this workflow and causes intermittent failures.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare site
+        run: |
+          mkdir -p _site
+          cp -r index.html js styles webpages Matrix .nojekyll CNAME _site/
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy (attempt 1)
+        id: deploy1
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Wait before retry
+        if: steps.deploy1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Deploy (attempt 2)
+        id: deploy2
+        if: steps.deploy1.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Wait before retry
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+        run: sleep 60
+
+      - name: Deploy (attempt 3)
+        id: deploy3
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Deployment result
+        id: deployment
+        if: always()
+        run: |
+          if [ "${{ steps.deploy1.outcome }}" = "success" ] \
+            || [ "${{ steps.deploy2.outcome }}" = "success" ] \
+            || [ "${{ steps.deploy3.outcome }}" = "success" ]; then
+            echo "page_url=https://valentine.lilpossum.xyz/" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "::error::GitHub Pages deploy failed after 3 attempts."
+          echo "::error::Ensure Settings → Pages → Source is set to GitHub Actions (not Deploy from a branch)."
+          exit 1
