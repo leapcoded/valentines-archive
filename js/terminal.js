@@ -520,11 +520,6 @@ var App = {
 };
 
 jQuery(document).ready(function($) {
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    window.location.href = "https://lilpossum.xyz";
-    return;
-  }
-
   $("body").terminal(App, {
     greetings: function(cb) {
       cb(App.motd(true));
