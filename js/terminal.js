@@ -48,6 +48,7 @@ var App = {
       this.echo("|  " + commandText("attributes") + "         - Serval statistics");
       this.echo("|  " + commandText("clear") + "              - Clear the terminal");
       this.echo("|  " + commandText("coderain") + "           - The Matrix has you...");
+      this.echo("|  " + commandText("home") + "                - Back to lilpossum.xyz");
       this.echo("|  " + commandText("prompt") + "             - Type prompt plus your name to change the prompt");
       this.echo();
       this.echo("|  " + commandText("contact") + "            - Contact me")
@@ -82,6 +83,10 @@ var App = {
 
     coderain: function() {
       window.location.href = "../Matrix/index.html";
+    },
+
+    home: function() {
+      window.location.href = "https://lilpossum.xyz";
     },
 
     
