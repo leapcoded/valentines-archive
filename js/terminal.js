@@ -36,6 +36,29 @@ function onHiddenFound(terminal, name) {
   }
 }
 
+function htopBar(percent) {
+  var filled = Math.max(0, Math.min(20, Math.round(percent / 5)));
+  return "[" + "#".repeat(filled) + "-".repeat(20 - filled) + "] " + percent.toFixed(1) + "%";
+}
+
+function randomPercent(min, max) {
+  return min + Math.random() * (max - min);
+}
+
+function showLinks(terminal) {
+  terminal.echo();
+  terminal.echo("Places you can find Skye / Neri online:");
+  terminal.echo();
+
+  SOCIAL_LINKS.forEach(function(link) {
+    terminal.echo("|  " + commandText(link.label.padEnd(18)) + " " + link.url);
+  });
+
+  terminal.echo();
+  terminal.echo("GitHub is usually the best bet if you want to say hi about a project.");
+  terminal.echo();
+}
+
 var TAKA_ASCII = ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\n" +
   ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\n" +
   ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\n" +
@@ -150,6 +173,26 @@ var POSSUM_FACTS = [
   "SRV OS is powered by caffeine, curiosity, and at least one wiggle."
 ];
 
+var JQUERY_FACTS = [
+  "jQuery launched in 2006 with the motto: write less, do more.",
+  "The dollar sign alias exists because typing jQuery() gets old fast.",
+  "jQuery Terminal turns any DOM element into a command line. SRV OS runs on it.",
+  "Chaining is a core jQuery idea: $(element).addClass('retro').fadeIn().",
+  "jQuery selectors use CSS syntax, which made the early web feel suddenly approachable.",
+  "This site still loads jQuery 3.3.1. Old habits, cozy terminals.",
+  "jQuery was created by John Resig when the DOM was wild and inconsistent.",
+  "Under the hood, jQuery normalises browser quirks so you can focus on ideas instead of edge cases."
+];
+
+var SOCIAL_LINKS = [
+  { label: "Website", url: "https://lilpossum.xyz" },
+  { label: "GitHub", url: "https://github.com/leapcoded" },
+  { label: "Bluesky", url: "https://bsky.app/profile/lilpossum.bsky.social" },
+  { label: "Bandcamp", url: "https://lilpossum.bandcamp.com" },
+  { label: "Valentine terminal", url: "https://valentine.lilpossum.xyz" },
+  { label: "Become a cat", url: "https://cat.lilpossum.xyz" }
+];
+
 var FORTUNES = [
   "A cozy blanket and good company are closer than they appear.",
   "Your next adventure begins with one brave little command.",
@@ -197,20 +240,23 @@ var App = {
     this.echo("|  " + commandText("motd") + "               - Display Message of the Day");
     this.echo();
     this.echo("|  " + commandText("about") + "              - About SRV OS");
+    this.echo("|  " + commandText("origin") + "             - Why this site exists");
     this.echo("|  " + commandText("ascii") + "              - All about ASCII art!");
     this.echo("|  " + commandText("attributes") + "         - Serval statistics");
     this.echo("|  " + commandText("clear") + "              - Clear the terminal");
     this.echo("|  " + commandText("coderain") + "           - The Matrix has you...");
     this.echo("|  " + commandText("home") + "                - Back to lilpossum.xyz");
-    this.echo("|  " + commandText("possum") + "              - Possum and serval facts");
+    this.echo("|  " + commandText("fact") + "                - Random possum and serval facts");
+    this.echo("|  " + commandText("jquery") + "              - jQuery facts and lore");
     this.echo("|  " + commandText("hug") + "                 - Receive a virtual hug");
     this.echo("|  " + commandText("fortune") + "             - Open a digital fortune cookie");
     this.echo("|  " + commandText("date") + "                - Display system date and time");
+    this.echo("|  " + commandText("htop") + "               - Mock system process monitor");
     this.echo("|  " + commandText("cat") + "                 - Visit cat.lilpossum.xyz");
     this.echo("|  " + commandText("sysinfo") + "             - Display SRV OS system information");
+    this.echo("|  " + commandText("links") + "               - Where to find me online");
     this.echo("|  " + commandText("prompt") + "             - Type prompt plus your name to change the prompt");
     this.echo();
-    this.echo("|  " + commandText("contact") + "            - Contact me");
     this.echo("|  " + commandText("credits") + "            - Credits for this website");
     this.echo();
     this.echo("|  " + commandText("all") + "                - Run all commands");
@@ -239,8 +285,29 @@ var App = {
     window.location.href = "https://lilpossum.xyz";
   },
 
-  possum: function() {
+  fact: function() {
     return POSSUM_FACTS[Math.floor(Math.random() * POSSUM_FACTS.length)];
+  },
+
+  jquery: function() {
+    return JQUERY_FACTS[Math.floor(Math.random() * JQUERY_FACTS.length)];
+  },
+
+  origin: function() {
+    this.echo();
+    this.echo("|  " + commandText("Why SRV OS exists"));
+    this.echo();
+    this.echo("At the start of the year, Skye made a resolution to learn skills that might help with switching careers.");
+    this.echo("They were already studying web development at university and wanted a project that actually used what they were learning.");
+    this.echo();
+    this.echo("Valentine's Day was getting close. Skye is a notoriously hopeless romantic, so the idea became obvious:");
+    this.echo("build a cute terminal website for the people they love, full of hidden commands, ASCII art, and very sincere feelings.");
+    this.echo();
+    this.echo("What started as \"this will be a piece of cake\" turned into boot screens, morphing ASCII, retro scanlines, and a lot of jQuery rabbit holes.");
+    this.echo("Forum posts, documentation tabs, and borrowed inspiration from jQuery Terminal, ASCII Morph, and Ronnie Pyne's homepage layout all got stitched together.");
+    this.echo();
+    this.echo("Years later it lives on at " + commandText("valentine.lilpossum.xyz") + " — still part opossum, part serval, still powered by too much caffeine.");
+    this.echo();
   },
 
   hug: function() {
@@ -263,6 +330,26 @@ var App = {
     this.echo("|  System date: " + commandText(now.toLocaleDateString()));
     this.echo("|  System time: " + commandText(now.toLocaleTimeString()));
     this.echo("|  Timezone:    " + commandText(Intl.DateTimeFormat().resolvedOptions().timeZone));
+  },
+
+  htop: function() {
+    var cpu = randomPercent(8, 42);
+    var mem = randomPercent(28, 76);
+    var swap = randomPercent(0, 12);
+
+    this.echo();
+    this.echo("  SRV OS process monitor                    Tasks: 6 total, 2 wiggling, 4 vibing");
+    this.echo("  CPU " + htopBar(cpu) + "   Mem " + htopBar(mem) + "   Swap " + htopBar(swap));
+    this.echo();
+    this.echo("  PID   USER       CPU%  MEM%  COMMAND");
+    this.echo("  420   possum     " + randomPercent(4, 18).toFixed(1).padStart(4) + "  " + randomPercent(8, 24).toFixed(1).padStart(4) + "  love-daemon");
+    this.echo("  1337  serval     " + randomPercent(2, 12).toFixed(1).padStart(4) + "  " + randomPercent(5, 16).toFixed(1).padStart(4) + "  leggy.service");
+    this.echo("  2014  skye       " + randomPercent(1, 8).toFixed(1).padStart(4) + "  " + randomPercent(4, 12).toFixed(1).padStart(4) + "  jquery-terminal");
+    this.echo("  2602  caffeine   " + randomPercent(10, 35).toFixed(1).padStart(4) + "  " + randomPercent(12, 30).toFixed(1).padStart(4) + "  brew --foreground");
+    this.echo("  3141  ascii      " + randomPercent(1, 6).toFixed(1).padStart(4) + "  " + randomPercent(2, 10).toFixed(1).padStart(4) + "  morph --loop");
+    this.echo("  9999  hidden     " + randomPercent(0, 4).toFixed(1).padStart(4) + "  " + randomPercent(1, 5).toFixed(1).padStart(4) + "  secrets --count=" + hiddenCount.length);
+    this.echo();
+    this.echo("  Press " + commandText("q") + " to pretend to quit. This is a mock htop. Nothing is actually monitored.");
   },
 
   cat: function(arg) {
@@ -294,6 +381,15 @@ var App = {
     this.echo("|  Packages:  " + commandText(hiddenCount.length + " hidden commands found"));
     this.echo("|  Theme:     " + commandText("retro green"));
     this.echo();
+  },
+
+  links: function() {
+    showLinks(this);
+  },
+
+  contact: function() {
+    this.echo("Try the " + commandText("links") + " command for where to find me online.");
+    showLinks(this);
   },
 
   "2.14": function() {
@@ -347,8 +443,9 @@ var App = {
     this.echo("|  History:\n" +
       "SRV OS came about due to Skye wanting to learn more about " + hiddenLetter("nerdy") + " things and express their love for the people who inspire them every day.\n" +
       "At first, Skye was intimidated by the thought of learning something so complex, but they were determined to make something before valentines to show their love.\n" +
-      "Skye began browising forums and looking for ideas. Slowly but surely, they learned the basics of how to write simple Jquery stuff.\n" +
+      "Skye began browsing forums and looking for ideas. Slowly but surely, they learned the basics of how to write simple jQuery stuff.\n" +
       "\nThey've taken great " + hiddenLetter("pride") + " in creating this, and hope that you enjoy it as much as they enjoyed making it.\n");
+    this.echo("Type " + commandText("origin") + " for the longer version of how this project came to be.");
   },
 
   trophy: function() {
@@ -390,13 +487,6 @@ var App = {
     this.echo();
   },
 
-  contact: function() {
-    this.echo();
-    this.echo("|  " + commandText("Telegram") + ":      Removed as posted online for others.");
-    this.echo("|  " + commandText("Discord") + ":       Removed as posted online for others.");
-    this.echo();
-  },
-
   credits: function() {
     this.echo();
     this.echo("|  Site built by " + commandText("Skye Wright"));
@@ -420,7 +510,7 @@ var App = {
     this.exec("about");
     this.exec("ascii");
     this.exec("attributes");
-    this.exec("contact");
+    this.exec("links");
     this.exec("credits");
   },
 
