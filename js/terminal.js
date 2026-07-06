@@ -139,6 +139,39 @@ var LOVE_MESSAGES = [
   "*hands u a sparkly " + hiddenLetter("trophy") + "*"
 ];
 
+var POSSUM_FACTS = [
+  "Opossums have fifty teeth. That is a lot of teeth for one small possum.",
+  "Servals have the longest legs of any cat, relative to body size. Very leggy.",
+  "Opossums are immune to most snake venom. Built different.",
+  "A serval can leap over nine feet in a single bound. Boing.",
+  "Opossums play dead so convincingly that predators often leave them alone.",
+  "Servals catch prey by pouncing with up to a fifty percent success rate.",
+  "Baby opossums are called joeys and ride around in pouches.",
+  "SRV OS is powered by caffeine, curiosity, and at least one wiggle."
+];
+
+var FORTUNES = [
+  "A cozy blanket and good company are closer than they appear.",
+  "Your next adventure begins with one brave little command.",
+  "Someone nearby thinks you are doing better than you realise.",
+  "Good things come to those who type " + commandText("menu") + " and explore.",
+  "The matrix has you, but hugs are still free.",
+  "A warm drink and a silly website will improve this week.",
+  "You will soon discover a command you did not expect.",
+  "Leggy energy is strong with you today."
+];
+
+var HUG_ART = [
+  "(づ｡◕‿‿◕｡)づ  *offers hug*",
+  "   \\   ^__^",
+  "    \\  (oo)\\_______",
+  "       (__)\\       )\\/\\",
+  "           ||----w |",
+  "           ||     ||",
+  "",
+  "Hug deployed successfully."
+];
+
 var App = {
   motd: function(ret) {
     if (typeof ret === "undefined") {
@@ -169,6 +202,12 @@ var App = {
     this.echo("|  " + commandText("clear") + "              - Clear the terminal");
     this.echo("|  " + commandText("coderain") + "           - The Matrix has you...");
     this.echo("|  " + commandText("home") + "                - Back to lilpossum.xyz");
+    this.echo("|  " + commandText("possum") + "              - Possum and serval facts");
+    this.echo("|  " + commandText("hug") + "                 - Receive a virtual hug");
+    this.echo("|  " + commandText("fortune") + "             - Open a digital fortune cookie");
+    this.echo("|  " + commandText("date") + "                - Display system date and time");
+    this.echo("|  " + commandText("cat") + "                 - Visit cat.lilpossum.xyz");
+    this.echo("|  " + commandText("sysinfo") + "             - Display SRV OS system information");
     this.echo("|  " + commandText("prompt") + "             - Type prompt plus your name to change the prompt");
     this.echo();
     this.echo("|  " + commandText("contact") + "            - Contact me");
@@ -198,6 +237,63 @@ var App = {
 
   home: function() {
     window.location.href = "https://lilpossum.xyz";
+  },
+
+  possum: function() {
+    return POSSUM_FACTS[Math.floor(Math.random() * POSSUM_FACTS.length)];
+  },
+
+  hug: function() {
+    this.echo(HUG_ART.join("\n"));
+  },
+
+  fortune: function() {
+    this.echo();
+    this.echo("  .---.");
+    this.echo(" /     \\");
+    this.echo("|       |");
+    this.echo(" \\     /");
+    this.echo("  '---'");
+    this.echo();
+    return FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
+  },
+
+  date: function() {
+    var now = new Date();
+    this.echo("|  System date: " + commandText(now.toLocaleDateString()));
+    this.echo("|  System time: " + commandText(now.toLocaleTimeString()));
+    this.echo("|  Timezone:    " + commandText(Intl.DateTimeFormat().resolvedOptions().timeZone));
+  },
+
+  cat: function(arg) {
+    if (arg === "go") {
+      window.location.href = "https://cat.lilpossum.xyz";
+      return;
+    }
+
+    this.echo();
+    this.echo("Become a cat. Go on. You know you want to.");
+    this.echo();
+    this.echo("|  Project: " + commandText("become-cat"));
+    this.echo("|  URL:     " + commandText("https://cat.lilpossum.xyz"));
+    this.echo();
+    this.echo("Type " + commandText("cat go") + " to be teleported there immediately.");
+  },
+
+  sysinfo: function() {
+    this.echo();
+    this.echo("       _____");
+    this.echo("      /     \\");
+    this.echo("     | o   o |   " + commandText("SRV OS 2.14"));
+    this.echo("      \\ ___ /    possum-serval edition");
+    this.echo();
+    this.echo("|  Host:      " + commandText(window.location.hostname || "valentine.lilpossum.xyz"));
+    this.echo("|  Shell:     " + commandText("jQuery Terminal"));
+    this.echo("|  Kernel:    " + commandText("love.js"));
+    this.echo("|  Uptime:    " + commandText("since Valentine's Day, forever"));
+    this.echo("|  Packages:  " + commandText(hiddenCount.length + " hidden commands found"));
+    this.echo("|  Theme:     " + commandText("retro green"));
+    this.echo();
   },
 
   "2.14": function() {
